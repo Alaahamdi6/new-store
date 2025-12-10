@@ -23,6 +23,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     name: Build and Test Backend (Java 21) and Frontend (Angular)
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Checkout code
