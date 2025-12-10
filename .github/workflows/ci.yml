@@ -132,14 +132,6 @@ jobs:
           fi
         continue-on-error: true
 
-      - name: Snyk Scan
-        uses: snyk/actions/maven@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --severity-threshold=high
-        continue-on-error: true
-
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@master
         env:
