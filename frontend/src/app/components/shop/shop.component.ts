@@ -18,7 +18,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './shop.component.html',
   styleUrls: ['./shop.component.css']
 })
-export class ShopComponent implements OnInit {è
+export class ShopComponent implements OnInit {
   status: number = 0;
   products: Product[] = [];
   filteredProducts: Product[] = [];
