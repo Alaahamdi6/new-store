@@ -1,0 +1,156 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+  pages: write
+  id-token: write
+
+env:
+  DB_TYPE: sqlite
+  SQLITE_DB_PATH: /tmp/sorrentodb.sqlite
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Build and Test with Java 21
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2
+
+      - name: Ensure mvnw is executable (if present)
+        run: |
+          if [ -f elecstore/mvnw ]; then chmod +x elecstore/mvnw; fi
+
+      - name: Setup SQLite database
+        run: |
+          echo "Setting up SQLite database..."
+          sudo apt-get update
+          sudo apt-get install -y sqlite3
+
+          if [ -f schema.sql ]; then
+            echo "Creating SQLite database with schema..."
+            sqlite3 ${{ env.SQLITE_DB_PATH }} < schema.sql || echo "schema.sql import returned non-zero"
+          else
+            echo "schema.sql not present — skipping import"
+          fi
+
+          echo "Verifying database setup..."
+          sqlite3 ${{ env.SQLITE_DB_PATH }} "SELECT name FROM sqlite_master WHERE type='table';" || true
+          echo "SQLite database initialization step finished"
+
+      - name: Run tests
+        working-directory: ./elecstore
+        run: |
+          if [ -f mvnw ]; then
+            ./mvnw -B clean test
+          else
+            mvn -B clean test
+          fi
+
+      - name: Generate JaCoCo report
+        working-directory: ./elecstore
+        run: |
+          if [ -f mvnw ]; then
+            ./mvnw -B jacoco:report
+          else
+            mvn -B jacoco:report
+          fi
+
+      - name: Generate test report
+        uses: dorny/test-reporter@v2
+        if: success() || failure()
+        with:
+          name: Maven Test Results
+          path: elecstore/target/surefire-reports/*.xml
+          reporter: java-junit
+          fail-on-error: false
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        if: success() || failure()
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./elecstore/target/site/jacoco/jacoco.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./elecstore/target/surefire-reports/TEST-*.xml
+
+      - name: Run PiTest mutation testing
+        working-directory: ./elecstore
+        run: |
+          if [ -f mvnw ]; then
+            ./mvnw -B org.pitest:pitest-maven:mutationCoverage
+          else
+            mvn -B org.pitest:pitest-maven:mutationCoverage
+          fi
+        continue-on-error: true
+
+      - name: Prepare reports for GitHub Pages
+        if: github.ref == 'refs/heads/main' && always()
+        run: |
+          mkdir -p github-pages/PiTest
+          mkdir -p github-pages/Jacoco
+          if [ -d "elecstore/target/pit-reports" ]; then
+            cp -r elecstore/target/pit-reports/* github-pages/PiTest/ || echo "No PiTest reports found"
+          fi
+          if [ -d "elecstore/target/site/jacoco" ]; then
+            cp -r elecstore/target/site/jacoco/* github-pages/Jacoco/ || echo "No JaCoCo reports found"
+          fi
+
+      - name: Deploy reports to GitHub Pages (upload artifact)
+        uses: actions/upload-pages-artifact@v3
+        if: github.ref == 'refs/heads/main' && always()
+        with:
+          path: ./github-pages
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
+        if: github.ref == 'refs/heads/main' && always()
+        id: deployment
+
+      - name: Build application
+        working-directory: ./elecstore
+        run: |
+          if [ -f mvnw ]; then
+            ./mvnw -B package -DskipTests
+          else
+            mvn -B package -DskipTests
+          fi
+
+      - name: Upload backend artifact
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: backend-artifact-${{ github.sha }}
+          path: elecstore/target/*.jar
+          retention-days: 30

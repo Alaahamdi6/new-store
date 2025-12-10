@@ -1,0 +1,59 @@
+stages:
+  - test
+  - build
+
+variables:
+  DOCKER_DRIVER: overlay2
+  REGISTRY_URL: registry.gitlab.com/eyabouaziz/projetsb/container_registry
+  COMPOSE_IMAGE: $REGISTRY_URL/elecstore:latest # Unified image for the environment
+  MYSQL_ROOT_PASSWORD: root
+  MYSQL_DATABASE: elecstore
+  MYSQL_USER: user
+  MYSQL_PASSWORD: password
+
+test-backend:
+  image: openjdk:21-jdk-slim
+  stage: test
+  services:
+  - mysql:8.0
+  before_script:
+    - apt-get update && apt-get install -y default-mysql-client
+    - echo "Waiting for database to be ready..."
+    - until mysqladmin ping -h "mysql" --silent; do echo "Waiting for MySQL..."; sleep 1; done
+    - mysql -h mysql -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE < database/electronics.sql
+  script:
+    - apt-get update && apt-get install -y maven && rm -rf /var/lib/apt/lists/*
+    - cd elecstore
+    - mvn clean test
+
+test-frontend:
+  image: node:20
+  stage: test
+  before_script:
+    - apt-get update && apt-get install -y wget gnupg
+    - wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
+    - echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
+    - apt-get update && apt-get install -y google-chrome-stable
+    - export CHROME_BIN=/usr/bin/google-chrome
+    - cd frontend
+    - npm ci --legacy-peer-deps
+  script:
+    - npm run test -- --watch=false --browsers=ChromeHeadless 
+  allow_failure: true
+  artifacts:
+    paths:
+      - coverage/ 
+    expire_in: 1 week
+
+build-docker-compose:
+  image: docker:24
+  stage: build
+  services:
+    - docker:dind
+  before_script:
+    - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin "$DOCKER_HUB_REGISTRY"
+  script:
+    - docker-compose build
+    - docker-compose push
+    - docker-compose up
+

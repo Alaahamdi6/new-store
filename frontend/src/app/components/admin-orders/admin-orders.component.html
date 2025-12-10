@@ -1,0 +1,128 @@
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<div class="container-fluid py-5">
+    <div class="container">
+      <h2 class="display-6 mb-3">Admin Orders</h2>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer Name</th>
+              <th>Email</th>
+              <th>Address</th>
+              <th>Payment Method</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of orders">
+              <td>{{ order.id }}</td>
+              <td>{{ order.firstName }} {{ order.secondName }}</td>
+              <td>{{ order.email }}</td>
+              <td>{{ order.address }}, {{ order.city }}, {{ order.country }}</td>
+              <td>{{ order.payment }}</td>
+              <td >
+                <select [class]="'form-select ' + getStatusClass(order.status)"
+                    [(ngModel)]="order.status" 
+                    (change)="updateOrderStatus(order.id, order.status)"
+                    [attr.data-order-id]="order.id"
+                    class="form-select">
+                  <!-- <option value="PENDING">Pending</option>
+                  <option value="PROCESSING">Processing</option>
+                  <option value="SHIPPED">Shipped</option>
+                  <option value="DELIVERED">Delivered</option>
+                  <option value="CANCELLED">Cancelled</option> -->
+                  <option value="ORDERED">Ordered</option>
+                  <option value="PROCESSING">Processing</option>
+                  <option value="DELIVERED">Delivered</option>
+                </select>
+              </td>
+              <td>
+                <button class="btn btn-primary btn-sm" (click)="viewOrderDetails(order.id)">View Details</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+<!-- Order Details Modal -->
+<div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="orderDetailsModalLabel">Order #{{selectedOrder?.id}}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <!-- Customer Information -->
+              <div class="row mb-4">
+                  <div class="col-md-6">
+                      <h6>Customer Information</h6>
+                      <p>{{selectedOrder?.firstName}} {{selectedOrder?.secondName}}</p>
+                      <p>{{selectedOrder?.address}}</p>
+                      <p>{{selectedOrder?.city}}, {{selectedOrder?.country}} {{selectedOrder?.postcode}}</p>
+                      <p>Phone: {{selectedOrder?.mobile}}</p>
+                      <p>Email: {{selectedOrder?.email}}</p>
+                  </div>
+                  <div class="col-md-6">
+                      <h6>Order Details</h6>
+                      <p>Payment Method: {{selectedOrder?.payment}}</p>
+                      <p>Status: <span class="badge" [ngClass]="{
+                          'status-ordered': selectedOrder?.status === 'ORDERED',
+                          'status-processing': selectedOrder?.status === 'PROCESSING',
+                          'status-delivered': selectedOrder?.status === 'DELIVERED'
+                      }">{{selectedOrder?.status}}</span></p>
+                      <p>Order Date: {{selectedOrder?.purchaseDate | date}}</p>
+                  </div>
+              </div>
+
+              <!-- Order Items -->
+              <h6>Order Items</h6>
+              <div class="table-responsive">
+                  <table class="table">
+                      <thead>
+                          <tr>
+                              <th>Product</th>
+                              <th>Quantity</th>
+                              <th>Price</th>
+                              <th>Total</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr *ngFor="let item of orderItems">
+                              <td>
+                                  <div class="d-flex align-items-center">
+                                      <img [src]="'assets/img/' + item.product.image" 
+                                          class="img-thumbnail me-2" 
+                                          style="width: 60px; height: 60px; object-fit: cover">
+                                      {{item.product.productName}}
+                                  </div>
+                              </td>
+                              <td>{{item.quantity}}</td>
+                              <td>{{item.product.price}} DT</td>
+                              <td>{{item.product.price * item.quantity}} DT</td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+
+              <!-- Order Notes -->
+              <div class="mt-3" *ngIf="selectedOrder?.notes">
+                  <h6>Additional Notes</h6>
+                  <p>{{selectedOrder?.notes}}</p>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+

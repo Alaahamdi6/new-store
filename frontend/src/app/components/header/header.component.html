@@ -1,0 +1,182 @@
+<!-- Navbar start -->
+<div class="container-fluid fixed-top">
+    <div class="container topbar d-none d-lg-block">
+        <div class="d-flex justify-content-between">
+            <div class="top-info ps-2">
+                <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-beige"></i> <a href="#" class="text-white">Manzel Chaker, Sfax</a></small>
+                <small class="me-3"><i class="fas fa-envelope me-2 text-beige"></i><a href="#" class="text-white">eyabouaziz4&#64;gmail.com</a></small>
+            </div>
+            <div class="top-link pe-2">
+                <a href="#" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
+                <a href="#" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
+                <a href="#" class="text-white"><small class="text-white ms-2">Sales and Refunds</small></a>
+            </div>
+        </div>
+    </div>
+    <div class="container px-0">
+        <nav class="navbar navbar-dark text-dark navbar-expand-xl">
+            <a href="index.html" class="navbar-brand"><h1 class="text-beige display-6">Electronics</h1></a>
+            <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="fa fa-bars text-light"></span>
+            </button>
+            <div class="collapse navbar-collapse text-blak" id="navbarCollapse">
+              <div class="navbar-nav mx-auto">
+                <a routerLink="/" class="nav-item nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+                <a routerLink="/shop" class="nav-item nav-link" routerLinkActive="active">Shop</a>
+                <a routerLink="/testimonial" class="nav-item nav-link" routerLinkActive="active">Testimonial</a>
+                <a *ngIf="!isAdmin()" routerLink="/cart" class="nav-item nav-link" routerLinkActive="active">Cart</a>
+                <a *ngIf="isAdmin()" routerLink="/admin/orders" class="nav-item nav-link" routerLinkActive="active">Orders</a>
+                <a routerLink="/contact" class="nav-item nav-link" routerLinkActive="active">Contact</a>
+              </div>
+              
+                <div class="d-flex m-3 me-0">
+                    <a href="/cart" class="position-relative me-4 my-auto" *ngIf="!isAdmin()">
+                        <i class="fa fa-shopping-bag fa-2x text-red"></i>
+                        <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-red " style="top: -5px; left: 15px; height: 20px; min-width: 20px;">{{ cartItemCount }}</span>
+                    </a>
+                    <!-- Profile Picture Button with Dropdown -->
+                    <div class="profile-dropdown" *ngIf="currentUser">
+                      <a class="btn-profile me-4" (click)="toggleDropdown()">
+                        <img [src]="'http://localhost:8090/uploads/' + userDetails.photo" class="profile-img">
+                      </a>
+ 
+                      <!-- Dropdown Menu -->
+                      <div class="dropdown-menu" *ngIf="dropdownOpen">
+                        <a class="dropdown-item" routerLink="/profile">View Profile</a>
+                        <a class="dropdown-item" (click)="logout()">Logout</a>
+                      </div>
+                    </div>
+                    <!-- If user is not logged in, show login button -->
+                    <a *ngIf="!currentUser" class="btn-search btn text-black me-4" data-bs-toggle="modal" data-bs-target="#loginModal">
+                      <i class="fas fa-user fa-2x text-red"></i>
+                    </a> 
+
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>
+<!-- Navbar End -->
+<!-- Modal login Start -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content rounded-0">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Please Sign In</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="clearErrors()"></button>
+      </div>
+      <div class="modal-body d-flex align-items-center">
+        <div class="input-group w-75 mx-auto d-flex">
+          <div class="container">
+            <div class="signin-container">
+              <h2>Sign In</h2>
+              <!-- Display error message -->
+              <div *ngIf="loginError" class="alert alert-danger" role="alert">
+                {{ loginError }}
+              </div>
+              <form [formGroup]="loginForm" (ngSubmit)="handleLogin()">
+                <div class="form-group">
+                  <label for="loginUsername">Username</label>
+                  <input
+                    id="loginUsername"
+                    type="text"
+                    formControlName="username"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="loginPassword">Password</label>
+                  <input
+                    id="loginPassword"
+                    type="password"
+                    formControlName="password"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <br />
+                <div class="form-group">
+                  <button type="submit" class="btn btn-primary submit-btn">Sign In</button>
+                </div>
+              </form>
+              <p>
+                Don't have an account?
+                <a
+                  data-bs-toggle="modal"
+                  data-bs-target="#signupModal"
+                  (click)="clearErrors()"
+                  class="text-red"
+                  >Sign Up</a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal login End -->
+
+<!-- Modal signup Start -->
+<div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content rounded-0">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Please Sign Up</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="clearErrors()"></button>
+      </div>
+      <div class="modal-body d-flex align-items-center">
+        <div class="input-group w-75 mx-auto d-flex">
+          <div class="container">
+            <div class="signin-container">
+              <h2>Sign Up</h2>
+              <!-- Display error message -->
+              <div *ngIf="signupError" class="alert alert-danger" role="alert">
+                {{ signupError }}
+              </div>
+              <form [formGroup]="signupForm" (ngSubmit)="handleSignup()">
+                <div class="form-group">
+                  <label for="signupUsername">Username</label>
+                  <input
+                    id="signupUsername"
+                    type="text"
+                    formControlName="username"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="signupPassword">Password</label>
+                  <input
+                    id="signupPassword"
+                    type="password"
+                    formControlName="password"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <br />
+                <div class="form-group">
+                  <button type="submit" class="btn btn-primary submit-btn">Sign Up</button>
+                </div>
+              </form>
+              <p>
+                Already have an account?
+                <a
+                  data-bs-toggle="modal"
+                  data-bs-target="#loginModal"
+                  (click)="clearErrors()"
+                  class="text-red"
+                  >Sign In</a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal signup End -->

@@ -1,0 +1,59 @@
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: elecstore-db
+    restart: always
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"  # New: Allows empty root password
+      MYSQL_DATABASE: ${DB_NAME:-electronics}
+      
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - elecstore-network
+    healthcheck:  # Added: Enables reliable startup waits
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    image: eyabouaziz/elecstore-backend:latest
+    container_name: elecstore-backend
+    restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST:-db}:${DB_PORT:-3306}/${DB_NAME:-electronics}?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: ${DB_USER:-root}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-}
+    ports:
+      - "8090:8090"
+    volumes:
+      - uploads-data:/elecstore/uploads
+    depends_on:
+      db:
+        condition: service_healthy 
+    networks:
+      - elecstore-network
+
+  frontend:
+    image: eyabouaziz/elecstore-frontend:latest
+    container_name: elecstore-frontend
+    restart: always
+    ports:
+      - "4200:80"  
+    depends_on:
+      - backend
+    networks:
+      - elecstore-network
+
+volumes:
+  mysql-data: 
+  uploads-data: 
+
+networks:
+  elecstore-network:
+    driver: bridge

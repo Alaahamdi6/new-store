@@ -1,0 +1,111 @@
+<!-- Single Page Header start -->
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">Testimonials</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item">Home</li>
+        <li class="breadcrumb-item">Pages</li>
+        <li class="breadcrumb-item active text-white">Testimonials</li>
+    </ol>
+</div>
+<!-- Single Page Header End -->
+
+<!-- testimonial.component.html -->
+<div class="container-fluid testimonial py-5">
+    <div class="container py-5" >
+      <div class="testimonial-header text-center">
+        <h4 class="text-primary">Our Testimonial</h4>
+        <h1 class="display-5 mb-5 text-dark">Our Client Saying!</h1>
+      </div>
+       <!-- Show loading state while testimonials are being fetched -->
+      <ng-container *ngIf="isLoading; else testimonialsContent">
+        <p class="text-center">Loading testimonials...</p>
+      </ng-container>
+      <ng-template #testimonialsContent>
+      <div class="owl-carousel testimonial-carousel"  >
+        <!-- Loop through testimonials -->
+        <div *ngFor="let testimonial of testimonials" class="testimonial-item img-border-radius bg-light rounded p-4 position-relative">
+          <i class="fa fa-quote-right fa-2x text-secondary" style="position: absolute; bottom: 40px; right: 25px;"></i>
+          <div style="position: absolute; top: 15px; right: 20px;">
+            <button
+              *ngIf="isAdmin"
+              (click)="deleteTestimonial(testimonial.id)"
+              class="btn btn-danger btn-lg">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+          <div class="mb-4 pb-4 border-bottom border-secondary">
+            <p class="mb-0">{{ testimonial.comment }}</p>
+          </div>
+          <div class="d-flex align-items-center flex-nowrap">
+            <div class="bg-secondary rounded">
+              <img
+                [src]="testimonial.photo ?  'http://localhost:8090/uploads/' + testimonial.photo : 'assets/img/avatar.jpg'"
+                class="img-fluid rounded"
+                style="width: 100px; height: 100px;"
+                alt=""
+              />
+            </div>
+            <div class="ms-4 d-block">
+              <h4 class="text-dark">{{ testimonial.username }}</h4>
+              <div class="d-flex pe-5">
+                <!-- Generate stars dynamically -->
+                <i
+                  class="fas"
+                  [ngClass]="i < testimonial.stars ? 'fa-star text-primary' : 'fa-star'"
+                  *ngFor="let i of [0, 1, 2, 3, 4]"
+                ></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    </div>
+  </div>
+  
+  <div class="container py-5">
+    <div class="testimonial-header text-center">
+      <h4 class="text-primary">Add Testimonial</h4>
+      <h1 class="display-5 mb-5 text-dark">What do you think of us!?</h1>
+    </div>
+    <form [formGroup]="testimonialForm" (ngSubmit)="submitTestimonial()" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label for="username" class="form-label">Username:</label>
+        <input id="username" formControlName="username" class="form-control" required />
+      </div>
+      <div class="mb-3">
+        <label for="comment" class="form-label">Comment:</label>
+        <textarea
+          id="comment"
+          formControlName="comment"
+          class="form-control"
+          rows="2"
+          required
+        ></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="starsInput" class="form-label">Stars:</label>
+        <input
+          id="starsInput"
+          formControlName="stars"
+          type="number"
+          min="1"
+          max="5"
+          class="form-control w-25"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="photo" class="form-label">Photo:</label>
+        <input
+          id="photo"
+          type="file"
+          (change)="onFileChange($event)"
+          class="form-control"
+        />
+      </div>
+      <button type="submit" class="btn btn-primary" [disabled]="testimonialForm.invalid">
+        Submit
+      </button>
+    </form>
+  </div>
+  

@@ -1,0 +1,76 @@
+.carousel-control-prev,
+.carousel-control-next {
+  top: 50%; /* Center vertically */
+  transform: translateY(-50%); /* Adjust for proper centering */
+}
+.color-dot {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+}
+
+/* Style for the category list */
+.fruite-categorie {
+    max-height: 200px; /* Limit height to make it scrollable */
+    overflow-y: auto; /* Add scrollbar if needed */
+    margin-bottom: 10px;
+  }
+  
+  /* Style for category icons */
+  .fruite-categorie i {
+    margin-right: 10px;
+  }
+
+  /* Style for the brand list */
+.brand-list {
+    max-height: 200px; /* Limit height to make it scrollable */
+    overflow-y: auto; /* Add scrollbar if needed */
+    margin-bottom: 10px;
+  }
+  
+  /* Style for the search bar */
+  .input-group {
+    margin-bottom: 10px;
+  }
+  
+  /* Style for the show more/less link */
+  .text-primary {
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  /* Ensure all cards have the same height */
+.fruite-item {
+    height: 100%; /* Make the card take full height of its container */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Ensure the image has a consistent height and covers the area */
+  .fruite-img {
+    height: 200px; /* Fixed height for images */
+    overflow: hidden; /* Hide overflow */
+  }
+  
+  .fruite-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure the image covers the area without distortion */
+  }
+  
+  /* Ensure the card body takes up remaining space */
+  .fruite-item .flex-grow-1 {
+    flex-grow: 1; /* Make the card body expand to fill remaining space */
+  }
+  
+  /* Ensure the description text doesn't overflow */
+  .text-muted.small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }

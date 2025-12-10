@@ -1,0 +1,10 @@
+package electronics.elecstore.repositories;
+
+import electronics.elecstore.models.WishlistModel;
+import electronics.elecstore.models.UsersModel;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
+
+public interface WishlistRepository extends JpaRepository<WishlistModel, Integer> {
+    Optional<WishlistModel> findByUser(UsersModel user);
+}

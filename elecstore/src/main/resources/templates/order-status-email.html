@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #f8f9fa; padding: 15px; text-align: center; }
+        .content { padding: 20px; }
+        .status { font-weight: bold; color: #007bff; }
+        .footer { margin-top: 20px; font-size: 12px; color: #6c757d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Order Status Update</h2>
+        </div>
+        <div class="content">
+            <p>Hello,</p>
+            <p>The status of your order <strong>#[[${orderId}]]</strong> has been updated to: 
+               <span class="status">[[${newStatus}]]</span></p>
+            <p>Thank you for shopping with us!</p>
+        </div>
+        <div class="footer">
+            <p>If you have any questions, please contact our support team.</p>
+        </div>
+    </div>
+</body>
+</html>

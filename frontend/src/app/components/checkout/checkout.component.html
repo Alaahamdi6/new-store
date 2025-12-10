@@ -1,0 +1,228 @@
+<!-- Single Page Header start -->
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">Checkout</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Pages</a></li>
+        <li class="breadcrumb-item active text-white">Checkout</li>
+    </ol>
+</div>
+<!-- Single Page Header End -->
+<!-- Checkout Page Start -->
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <h1 class="mb-4">Billing details</h1>
+        <form [formGroup]="checkoutData" (ngSubmit)="placeOrder()">
+            <div class="row g-5">
+              <!-- Left Column: Customer Details -->
+              <div class="col-md-12 col-lg-6 col-xl-7">
+                <!-- First Name -->
+                <div class="form-item w-100">
+                  <label class="form-label my-3">First Name<sup>*</sup></label>
+                  <input type="text" class="form-control" formControlName="firstName">
+                  <div *ngIf="checkoutData.get('firstName')?.invalid && checkoutData.get('firstName')?.touched" class="text-danger">
+                    First Name is required.
+                  </div>
+                </div>
+          
+                <!-- Last Name -->
+                <div class="form-item w-100">
+                  <label class="form-label my-3">Last Name<sup>*</sup></label>
+                  <input type="text" class="form-control" formControlName="secondName">
+                  <div *ngIf="checkoutData.get('secondName')?.invalid && checkoutData.get('secondName')?.touched" class="text-danger">
+                    Last Name is required.
+                  </div>
+                </div>
+          
+                <!-- Address -->
+                <div class="form-item">
+                  <label class="form-label my-3">Address<sup>*</sup></label>
+                  <input type="text" class="form-control" placeholder="House Number Street Name" formControlName="address">
+                  <div *ngIf="checkoutData.get('address')?.invalid && checkoutData.get('address')?.touched" class="text-danger">
+                    Address is required.
+                  </div>
+                </div>
+          
+                <!-- City -->
+                <div class="form-item">
+                  <label class="form-label my-3">Town/City<sup>*</sup></label>
+                  <input type="text" class="form-control" formControlName="city">
+                  <div *ngIf="checkoutData.get('city')?.invalid && checkoutData.get('city')?.touched" class="text-danger">
+                    City is required.
+                  </div>
+                </div>
+          
+                <!-- Country -->
+                <div class="form-item">
+                  <label class="form-label my-3">Country<sup>*</sup></label>
+                  <input type="text" class="form-control" formControlName="country">
+                  <div *ngIf="checkoutData.get('country')?.invalid && checkoutData.get('country')?.touched" class="text-danger">
+                    Country is required.
+                  </div>
+                </div>
+          
+                <!-- Postcode -->
+                <div class="form-item">
+                  <label class="form-label my-3">Postcode/Zip<sup>*</sup></label>
+                  <input type="text" class="form-control" formControlName="postcode">
+                  <div *ngIf="checkoutData.get('postcode')?.invalid && checkoutData.get('postcode')?.touched" class="text-danger">
+                    Postcode is required.
+                  </div>
+                </div>
+          
+                <!-- Mobile -->
+                <div class="form-item">
+                  <label class="form-label my-3">Mobile<sup>*</sup></label>
+                  <input type="tel" class="form-control" formControlName="mobile">
+                  <div *ngIf="checkoutData.get('mobile')?.invalid && checkoutData.get('mobile')?.touched" class="text-danger">
+                    Mobile is required and must be valid.
+                  </div>
+                </div>
+          
+                <!-- Email -->
+                <div class="form-item">
+                  <label class="form-label my-3">Email Address<sup>*</sup></label>
+                  <input type="email" class="form-control" formControlName="email">
+                  <div *ngIf="checkoutData.get('email')?.invalid && checkoutData.get('email')?.touched" class="text-danger">
+                    Email is required and must be valid.
+                  </div>
+                </div>
+          
+                <!-- Additional Notes -->
+                <div class="form-item">
+                  <label class="form-label my-3">Additional notes</label>
+                  <textarea class="form-control" spellcheck="false" cols="30" rows="5" placeholder="Order Notes (Optional)" formControlName="notes"></textarea>
+                </div>
+              </div>
+          
+              <!-- Right Column: Order Summary -->
+              <div class="col-md-12 col-lg-6 col-xl-5">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Product</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of cartItems">
+                        <th scope="row">
+                          <div class="d-flex align-items-center mt-2">
+                            <img [src]="'assets/img/' + item.product.image" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="">
+                          </div>
+                        </th>
+                        <td class="py-5">
+                            <span class="truncate-text">{{ item.product.productName }}</span>
+                        </td>                          
+                        <td class="py-5">${{ item.product.price }}</td>
+                        <td class="py-5">{{ item.quantity }}</td>
+                        <td class="py-5">${{ item.product.price * item.quantity }}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="4" class="text-start py-3">
+                          <p class="mb-0 text-dark">Subtotal</p>
+                        </td>
+                        <td class="py-3 px-0 border-bottom border-top">
+                          <p class="mb-0 text-dark">{{ totalPrice }} DT</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="4" class="text-start py-3">
+                          <p class="mb-0 text-dark">Shipping</p>
+                        </td>
+                        <td class="py-3 px-0 border-bottom border-top">
+                          <p class="mb-0 text-dark">7 DT</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="4" class="text-start py-3" style="vertical-align: middle;">
+                          <p class="mb-0 text-dark" style="display: inline-block; margin-right: 10px;">Coupon</p>
+                          <input
+                            type="text"
+                            class="border-0 border-bottom rounded me-3 py-2 mb-0"
+                            placeholder="Coupon Code"
+                            [(ngModel)]="couponCode"
+                            [ngModelOptions]="{standalone: true}"
+                            style="display: inline-block; width: 150px; margin-right: 10px;"
+                           />
+                        </td>
+                        <td class="py-3 px-0" style="vertical-align: middle;">
+                            <button
+                            class="btn border-sec rounded-pill  text-primary"
+                            type="button"
+                            (click)="applyCoupon()"
+                            style="width: 80px; height: 40px;  "
+                            >
+                            Apply
+                            </button>
+                            
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="4" class="text-start py-3">
+                          <p class="mb-0 text-dark text-uppercase">TOTAL</p>
+                        </td>
+                        <td class="py-3 px-0 border-bottom border-top">
+                          <p class="mb-0 text-dark">{{ totalPrice + 7 }} DT</p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+          
+                <!-- Payment Options -->
+                <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
+                  <div class="col-12">
+                    <div class="form-check text-start my-3">
+                      <input type="radio" class="form-check-input" id="Transfer-1" formControlName="payment" value="Bank Transfer">
+                      <label class="form-check-label" for="Transfer-1">Direct Bank Transfer</label>
+                    </div>
+                    <p class="text-start text-dark">Make your payment directly into our bank account. Your order will not be shipped until the funds have cleared.</p>
+                  </div>
+                </div>
+          
+                <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
+                  <div class="col-12">
+                    <div class="form-check text-start my-3">
+                      <input type="radio" class="form-check-input" id="Payments-1" formControlName="payment" value="Check Payment">
+                      <label class="form-check-label" for="Payments-1">Check Payments</label>
+                    </div>
+                  </div>
+                </div>
+          
+                <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
+                  <div class="col-12">
+                    <div class="form-check text-start my-3">
+                      <input type="radio" class="form-check-input" id="Delivery-1" formControlName="payment" value="Cash on Delivery">
+                      <label class="form-check-label" for="Delivery-1">Cash On Delivery</label>
+                    </div>
+                  </div>
+                </div>
+          
+                <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
+                  <div class="col-12">
+                    <div class="form-check text-start my-3">
+                      <input type="radio" class="form-check-input" id="Paypal-1" formControlName="payment" value="Paypal">
+                      <label class="form-check-label" for="Paypal-1">Paypal</label>
+                    </div>
+                  </div>
+                </div>
+          
+                <!-- Submit Button -->
+                <div class="row g-4 text-center align-items-center justify-content-center pt-4">
+                  <button type="submit" class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary" [disabled]="checkoutData.invalid">
+                    Place Order
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+    </div>
+</div>
+<!-- Checkout Page End -->
+
+  
