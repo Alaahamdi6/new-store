@@ -12,6 +12,7 @@ permissions:
   checks: write
   pages: write
   id-token: write
+  security-events: write
 
 env:
   DB_TYPE: sqlite
@@ -26,6 +27,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+
+      - name: GitGuardian Scan
+        uses: gitguardian/ggshield-action@master
+        env:
+          GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
+          GITHUB_PUSH_BEFORE_SHA: ${{ github.event.before }}
+          GITHUB_PUSH_BASE_SHA: ${{ github.event.base }}
+          GITHUB_PULL_REQUEST_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        continue-on-error: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -119,6 +130,21 @@ jobs:
           else
             mvn -B org.pitest:pitest-maven:mutationCoverage
           fi
+        continue-on-error: true
+
+      - name: Snyk Scan
+        uses: snyk/actions/maven@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+        continue-on-error: true
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@master
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_LOGIN: ${{ secrets.SONAR_LOGIN }}
         continue-on-error: true
 
       - name: Prepare reports for GitHub Pages
