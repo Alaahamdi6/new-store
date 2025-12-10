@@ -82,11 +82,8 @@ jobs:
       - name: Generate JaCoCo report
         working-directory: ./elecstore
         run: |
-          if [ -f mvnw ]; then
-            ./mvnw -B jacoco:report
-          else
-            mvn -B jacoco:report
-          fi
+          echo "JaCoCo report will be generated during test phase"
+        continue-on-error: true
 
       - name: Generate test report
         uses: dorny/test-reporter@v2
