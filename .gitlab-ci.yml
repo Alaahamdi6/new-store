@@ -1,5 +1,6 @@
 stages:
   - test
+  - sonar
   - build
 
 variables:
@@ -25,6 +26,11 @@ test-backend:
     - apt-get update && apt-get install -y maven && rm -rf /var/lib/apt/lists/*
     - cd elecstore
     - mvn clean test
+  artifacts:
+    paths:
+      - elecstore/target/site/jacoco/
+      - elecstore/target/surefire-reports/
+    expire_in: 1 week
 
 test-frontend:
   image: node:20
@@ -38,13 +44,25 @@ test-frontend:
     - cd frontend
     - npm ci --legacy-peer-deps
   script:
-    - npm run test -- --watch=false --browsers=ChromeHeadless 
+    - npm run test -- --watch=false --browsers=ChromeHeadless --code-coverage
   allow_failure: true
   artifacts:
     paths:
-      - coverage/ 
+      - frontend/coverage/
     expire_in: 1 week
-
+sonarqube-analysis:
+  image: sonarsource/sonar-scanner-cli:latest
+  stage: sonar
+  dependencies:
+    - test-backend
+    - test-frontend
+  script:
+    - sonar-scanner
+      -Dsonar.host.url=https://sonarcloud.io
+      -Dsonar.login=$SONAR_TOKEN
+  only:
+    - main
+    - develop
 build-docker-compose:
   image: docker:24
   stage: build
