@@ -163,16 +163,12 @@
 									<goal>exec</goal>
 								</goals>
 								<configuration>
-									<executable>openjml</executable>
+									<executable>/bin/bash</executable>
 									<arguments>
-										<argument>-quiet</argument>
-										<argument>-esc</argument>
-										<argument>-classpath</argument>
-										<argument>${project.build.outputDirectory}</argument>
-										<argument>-sourcepath</argument>
-										<argument>${project.basedir}/src/main/java</argument>
-										<argument>${project.basedir}/src/main/java/electronics/elecstore/example/JmlExample.java</argument>
+										<argument>-c</argument>
+										<argument>${project.basedir}/run-openjml.sh</argument>
 									</arguments>
+									<workingDirectory>${project.basedir}</workingDirectory>
 								</configuration>
 							</execution>
 						</executions>

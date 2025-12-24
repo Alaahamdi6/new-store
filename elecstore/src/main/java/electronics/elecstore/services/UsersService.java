@@ -14,22 +14,39 @@ public class UsersService {
     @Autowired
     private UsersRepository usersRepository;
 
+    /*@ ensures \result != null;
+      @*/
     public List<UsersModel> getAllUsers() {
         return usersRepository.findAll();
     }
 
+    /*@ requires id != null;
+      @ requires id > 0;
+      @ ensures \result != null;
+      @*/
     public Optional<UsersModel> getUserById(Integer id) {
         return usersRepository.findById(id);
     }
 
+    /*@ requires username != null;
+      @ requires username.length() > 0;
+      @ ensures \result != null;
+      @*/
     public Optional<UsersModel> getUserByUsername(String username) {
         return usersRepository.findByUsername(username);
     }
 
+    /*@ requires user != null;
+      @ ensures \result != null;
+      @*/
     public UsersModel createUser(UsersModel user) {
         return usersRepository.save(user);
     }
 
+    /*@ requires id != null;
+      @ requires id > 0;
+      @ requires userDetails != null;
+      @*/
     public UsersModel updateUser(Integer id, UsersModel userDetails) {
         return usersRepository.findById(id).map(user -> {
             user.setUsername(userDetails.getUsername());
@@ -39,6 +56,9 @@ public class UsersService {
         }).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    /*@ requires id != null;
+      @ requires id > 0;
+      @*/
     public void deleteUser(Integer id) {
         usersRepository.deleteById(id);
     }

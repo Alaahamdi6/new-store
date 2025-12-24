@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>5/10</span>
+                <span class='fraction'>10/10</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">37.5% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/8</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>5/10</span>
+                <span class='fraction'>10/10</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -112,15 +112,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -128,7 +124,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -136,11 +132,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Injectable } from '@angular/core';
@@ -155,32 +155,32 @@ export class CheckoutService {
   private baseUrl = 'http://localhost:8090/api/checkouts';
   constructor(private http: HttpClient) {}
 &nbsp;
-<span class="fstat-no" title="function not covered" >  getAllOrders(</span>): Observable&lt;any&gt; {
-<span class="cstat-no" title="statement not covered" >    return this.http.get(`${this.baseUrl}`);</span>
+  getAllOrders(): Observable&lt;any&gt; {
+    return this.http.get(`${this.baseUrl}`);
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  placeOrder(</span>checkoutData: any, cartId: number) {
-<span class="cstat-no" title="statement not covered" >    return this.http.post(`${this.baseUrl}/${cartId}`, checkoutData);</span>
+  placeOrder(checkoutData: any, cartId: number) {
+    return this.http.post(`${this.baseUrl}/${cartId}`, checkoutData);
   }
   
   getOrderDetails(orderId: number): Observable&lt;any&gt; {
     return this.http.get(`${this.baseUrl}/${orderId}`);
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  getOrderItems(</span>orderId: number): Observable&lt;any&gt; {
-<span class="cstat-no" title="statement not covered" >    return this.http.get(`${this.baseUrl}/${orderId}/items`);</span>
+  getOrderItems(orderId: number): Observable&lt;any&gt; {
+    return this.http.get(`${this.baseUrl}/${orderId}/items`);
   }
 &nbsp;
   getUserOrders(userId: number): Observable&lt;any&gt; {
     return this.http.get(`${this.baseUrl}/user/${userId}`);
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  updateOrderStatus(</span>orderId: number, status: string): Observable&lt;any&gt; {
-<span class="cstat-no" title="statement not covered" >    return this.http.put(`${this.baseUrl}/${orderId}/status`, { status });</span>
+  updateOrderStatus(orderId: number, status: string): Observable&lt;any&gt; {
+    return this.http.put(`${this.baseUrl}/${orderId}/status`, { status });
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  updateOrderStatusWithNotification(</span>orderId: number, status: string): Observable&lt;any&gt; {
-<span class="cstat-no" title="statement not covered" >    return this.http.put(`${this.baseUrl}/${orderId}/status`, { status });</span>
+  updateOrderStatusWithNotification(orderId: number, status: string): Observable&lt;any&gt; {
+    return this.http.put(`${this.baseUrl}/${orderId}/status`, { status });
   }
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -190,7 +190,7 @@ export class CheckoutService {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-09T10:14:18.261Z
+                at 2025-12-24T20:31:23.437Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

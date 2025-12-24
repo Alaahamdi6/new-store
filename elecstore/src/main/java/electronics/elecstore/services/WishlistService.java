@@ -45,7 +45,7 @@ public class WishlistService {
 
         // Ensure the products list is initialized
         if (wishlist.getProducts() == null) {
-            wishlist.setProducts(new ArrayList<>());
+            wishlist.setProducts(new ArrayList<ProductsModel>());
         }
 
         // Add product if not already in the wishlist
@@ -54,7 +54,8 @@ public class WishlistService {
         }
 
         // Save and return the updated wishlist
-        return wishlistRepository.save(wishlist);
+        WishlistModel saved = wishlistRepository.<WishlistModel>save(wishlist);
+        return saved;
     }
     
     public void removeProductFromWishlist(Integer userId, Integer productId) {
@@ -62,7 +63,7 @@ public class WishlistService {
         if (wishlistOpt.isPresent()) {
             WishlistModel wishlist = wishlistOpt.get();
             wishlist.getProducts().removeIf(product -> product.getId() == productId);
-            wishlistRepository.save(wishlist);
+            wishlistRepository.<WishlistModel>save(wishlist);
         }
     }
 

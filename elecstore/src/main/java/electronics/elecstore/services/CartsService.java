@@ -51,7 +51,7 @@ public class CartsService {
                     .orElseThrow(() -> new IllegalArgumentException("Product not found"));
             CartItemModel newItem = new CartItemModel(cart, product, quantity);
             //cart.getCartItems().add(newItem);
-            cartRepository.save(cart);
+            cartRepository.<CartsModel>save(cart);
             return cartItemRepository.save(newItem);
         }
     }
@@ -69,7 +69,7 @@ public class CartsService {
     public void clearCart(Long userId) {
         CartsModel cart = getCartByUserId(userId);
         cart.getCartItems().clear();
-        cartRepository.save(cart);
+        cartRepository.<CartsModel>save(cart);
     }
     
    

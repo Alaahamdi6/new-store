@@ -4,6 +4,13 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { PLATFORM_ID } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/authentication/auth.service';
+import { CheckoutService } from '../../services/checkout/checkout.service';
+import { WishlistService } from '../../services/wishlist/wishlist.service';
+import { UserService } from '../../services/user/user.service';
+import { CartService } from '../../services/cart/cart.service';
+import { AuthStateService } from '../../services/authState/auth-state.service';
 
 import { ProfileComponent } from './profile.component';
 
@@ -17,7 +24,7 @@ describe('ProfileComponent', () => {
   const mockUserService = jasmine.createSpyObj('UserService', ['updateUser']);
   const mockCartService = jasmine.createSpyObj('CartService', ['getCart', 'addItem']);
   const mockAuthStateService = jasmine.createSpyObj('AuthStateService', ['clearCurrentUser']);
-  const mockRouter = { navigate: jasmine.createSpy('navigate') };
+  const mockRouter = { navigate: jasmine.createSpy('navigate') } as unknown as Router;
   const mockToastr = jasmine.createSpyObj('ToastrService', ['success', 'info']);
 
   beforeEach(async () => {
@@ -27,13 +34,13 @@ describe('ProfileComponent', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: ToastrService, useValue: mockToastr },
-        { provide: 'AuthService', useValue: mockAuthService },
-        { provide: 'CheckoutService', useValue: mockCheckoutService },
-        { provide: 'WishlistService', useValue: mockWishlistService },
-        { provide: 'UserService', useValue: mockUserService },
-        { provide: 'CartService', useValue: mockCartService },
-        { provide: 'AuthStateService', useValue: mockAuthStateService },
-        { provide: 'Router', useValue: mockRouter },
+        { provide: AuthService, useValue: mockAuthService },
+        { provide: CheckoutService, useValue: mockCheckoutService },
+        { provide: WishlistService, useValue: mockWishlistService },
+        { provide: UserService, useValue: mockUserService },
+        { provide: CartService, useValue: mockCartService },
+        { provide: AuthStateService, useValue: mockAuthStateService },
+        { provide: Router, useValue: mockRouter },
         { provide: PLATFORM_ID, useValue: 'browser' }
       ]
     }).compileComponents();
@@ -157,6 +164,51 @@ describe('ProfileComponent', () => {
     component.logout();
     expect(mockAuthService.logout).toHaveBeenCalled();
     expect(mockAuthStateService.clearCurrentUser).toHaveBeenCalled();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);
+    expect((mockRouter as any).navigate).toHaveBeenCalledWith(['/']);
+  });
+
+  it('loadWishlist should populate wishlist when user exists', () => {
+    component.user = { id: 11 } as any;
+    mockWishlistService.getWishlistByUser.and.returnValue(of({ products: [{ id: 1 }, { id: 2 }] }));
+    component.loadWishlist();
+    expect(mockWishlistService.getWishlistByUser).toHaveBeenCalledWith(11);
+    expect(component.wishlist.length).toBe(2);
+  });
+
+  it('loadOrderHistory should populate orders when user exists', () => {
+    component.user = { id: 21 } as any;
+    mockCheckoutService.getUserOrders.and.returnValue(of([{ id: 1 }, { id: 2 }]));
+    component.loadOrderHistory();
+    expect(mockCheckoutService.getUserOrders).toHaveBeenCalledWith(21);
+    expect(component.orders.length).toBe(2);
+  });
+
+  it('loadCart should populate cartItems when browser platform', () => {
+    localStorage.setItem('currentUser', JSON.stringify({ id: 33 }));
+    mockCartService.getCart.and.returnValue(of({ cartItems: [{}, {}] }));
+    component.loadCart();
+    expect(mockCartService.getCart).toHaveBeenCalledWith(33);
+    expect(component.cartItems.length).toBe(2);
+  });
+
+  it('changePassword should accept matching passwords', () => {
+    component.passwordForm.patchValue({ currentPassword: 'a', newPassword: 'secret1', confirmPassword: 'secret1' });
+    spyOn(console, 'log');
+    component.changePassword();
+    expect(console.log).toHaveBeenCalled();
+  });
+
+  it('changePassword should alert on mismatch', () => {
+    component.passwordForm.patchValue({ currentPassword: 'a', newPassword: 'secret1', confirmPassword: 'secret2' });
+    spyOn(window, 'alert');
+    component.changePassword();
+    expect(window.alert).toHaveBeenCalled();
+  });
+
+  it('savePreferences should log preferences', () => {
+    spyOn(console, 'log');
+    component.preferencesForm.patchValue({ emailNotifications: false, language: 'fr', theme: 'dark' });
+    component.savePreferences();
+    expect(console.log).toHaveBeenCalled();
   });
 });
