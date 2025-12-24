@@ -26,6 +26,9 @@ describe('ProfileComponent', () => {
   const mockAuthStateService = jasmine.createSpyObj('AuthStateService', ['clearCurrentUser']);
   const mockRouter = { navigate: jasmine.createSpy('navigate') } as unknown as Router;
   const mockToastr = jasmine.createSpyObj('ToastrService', ['success', 'info']);
+  const placeholderCurrent = 'placeholder-current';
+  const placeholderNew = 'placeholder-new';
+  const placeholderMismatch = 'placeholder-mismatch';
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -192,14 +195,14 @@ describe('ProfileComponent', () => {
   });
 
   it('changePassword should accept matching passwords', () => {
-    component.passwordForm.patchValue({ currentPassword: 'current-password', newPassword: 'new-password-one', confirmPassword: 'new-password-one' });
+    component.passwordForm.patchValue({ currentPassword: placeholderCurrent, newPassword: placeholderNew, confirmPassword: placeholderNew });
     spyOn(console, 'log');
     component.changePassword();
     expect(console.log).toHaveBeenCalled();
   });
 
   it('changePassword should alert on mismatch', () => {
-    component.passwordForm.patchValue({ currentPassword: 'current-password', newPassword: 'new-password-one', confirmPassword: 'different-password' });
+    component.passwordForm.patchValue({ currentPassword: placeholderCurrent, newPassword: placeholderNew, confirmPassword: placeholderMismatch });
     spyOn(window, 'alert');
     component.changePassword();
     expect(window.alert).toHaveBeenCalled();

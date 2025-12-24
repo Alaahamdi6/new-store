@@ -7,6 +7,7 @@ import { PLATFORM_ID } from '@angular/core';
 describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
+  const placeholderPassword = 'test-password-value';
 
 
   beforeEach(() => {
@@ -30,11 +31,11 @@ describe('AuthService', () => {
 
   it('login should POST and store user when token present', () => {
     let response: any;
-    service.login('u@test.com', 'pw').subscribe((res) => (response = res));
+    service.login('u@test.com', placeholderPassword).subscribe((res) => (response = res));
 
     const req = httpMock.expectOne('http://localhost:8090/api/auth/login');
     expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual({ username: 'u@test.com', password: 'pw' });
+    expect(req.request.body).toEqual({ username: 'u@test.com', password: placeholderPassword });
 
     const backend = { id: 10, token: 'jwt123', status: 1, photo: 'p.png' };
     req.flush(backend);
@@ -47,7 +48,7 @@ describe('AuthService', () => {
   });
 
   it('login should not store when token missing', () => {
-    service.login('a@b.com', 'pw').subscribe();
+    service.login('a@b.com', placeholderPassword).subscribe();
     const req = httpMock.expectOne('http://localhost:8090/api/auth/login');
     req.flush({});
 
@@ -57,11 +58,11 @@ describe('AuthService', () => {
 
   it('signup should POST and store user when token present', () => {
     let response: any;
-    service.signup('new@test.com', 'pw').subscribe((res) => (response = res));
+    service.signup('new@test.com', placeholderPassword).subscribe((res) => (response = res));
 
     const req = httpMock.expectOne('http://localhost:8090/api/auth/signup');
     expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual({ username: 'new@test.com', password: 'pw' });
+    expect(req.request.body).toEqual({ username: 'new@test.com', password: placeholderPassword });
 
     const backend = { id: 11, token: 'jwt999', status: 0, photo: 'avatar.jpg' };
     req.flush(backend);
