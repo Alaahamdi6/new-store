@@ -101,6 +101,8 @@ export class ProfileComponent implements OnInit {
         },
         error: (err) => {
           console.error('Failed to load wishlist:', err);
+          this.toastr.error('Failed to load wishlist', 'Error');
+          this.wishlist = [];
         },
       });
     }
@@ -193,7 +195,7 @@ export class ProfileComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to load order details:', err);
-        // Handle error
+        this.toastr.error('Failed to load order details', 'Error');
       }
     });
   }
@@ -201,10 +203,12 @@ export class ProfileComponent implements OnInit {
   private loadOrderItems(orderId: number): void {
     this.checkoutService.getOrderItems(orderId).subscribe({
       next: (items) => {
-        this.orderItems = items;
+        this.orderItems = items || [];
       },
       error: (err) => {
         console.error('Failed to load order items:', err);
+        this.toastr.error('Failed to load order items', 'Error');
+        this.orderItems = [];
       }
     });
   }
@@ -215,9 +219,15 @@ export class ProfileComponent implements OnInit {
     if (userId) {
       this.checkoutService.getUserOrders(userId).subscribe({
         next: (orders) => {
-          this.orders = orders;
-
+          this.orders = orders || [];
         },
+        error: (err) => {
+          console.error('Failed to load order history:', err);
+          this.toastr.error('Failed to load order history', 'Error');
+          this.orders = [];
+        }
+      });
+    }
         error: (err) => {
           console.error('Failed to load orders:', err);
         }
@@ -232,9 +242,11 @@ export class ProfileComponent implements OnInit {
         next: () => {
           this.wishlist = this.wishlist.filter((item) => item.id !== productId);
           console.log('Product removed from wishlist:', productId);
+          this.toastr.success('Product removed from wishlist', 'Success');
         },
         error: (err) => {
           console.error('Failed to remove product from wishlist:', err);
+          this.toastr.error('Failed to remove product from wishlist', 'Error');
         },
       });
     }
@@ -260,15 +272,21 @@ export class ProfileComponent implements OnInit {
     if (isPlatformBrowser(this.platformId )) {
       const userDetails = JSON.parse(localStorage.getItem('currentUser') || '{}');
   
-      if (userDetails) {
+      if (userDetails?.id) {
         const userId = userDetails.id; 
   
-        this.cartService.addItem(userId, productId, quantity).subscribe(() => {
-          this.loadCart();
-          this.toastr.success('Item Added to cart ', 'Item Added Successfully');
-        });
+        this.cartService.addItem(userId, productId, quantity).subscribe(
+          () => {
+            this.loadCart();
+            this.toastr.success('Item Added to cart ', 'Item Added Successfully');
+          },
+          (error) => {
+            console.error('Failed to add item to cart:', error);
+            this.toastr.error('Failed to add item to cart', 'Error');
+          }
+        );
       } 
-    }else {
+    } else {
       this.toastr.info('User is not logged in. Cannot add to cart.');
     }
   }

@@ -270,11 +270,13 @@ getProductImage(image: string | null): string {
   fetchProducts(): void {
     this.productService.getProducts().subscribe(
       (products: Product[]) => {
-        this.products = products; // Assign the response value to the products array
+        this.products = products || []; // Assign the response value to the products array
         console.log('Products:', this.products);
       },
       (error) => {
         console.error('Error fetching products:', error);
+        this.toastr.error('Failed to load products', 'Error');
+        this.products = [];
       }
     );
   }
@@ -359,16 +361,22 @@ console.log('button clicked');
   loadCart(): void {
     if (isPlatformBrowser(this.platformId) && localStorage.getItem('currentUser')) {
       const userDetails = JSON.parse(localStorage.getItem('currentUser') || '{}');
+      if (userDetails?.id) {
         const userId = userDetails.id; // Retrieve userId from stored user details
-  
-    this.cartService.getCart(userId).subscribe(cart => {
-      this.cartItems = cart.cartItems;
-    
-    });
+        this.cartService.getCart(userId).subscribe(
+          (cart) => {
+            this.cartItems = cart.cartItems || [];
+          },
+          (error) => {
+            console.error('Failed to load cart:', error);
+            this.toastr.error('Failed to load cart', 'Error');
+          }
+        );
+      }
     } else {
       this.toastr.info('User is not logged in. Cannot add to cart.');      
     }
-}
+  }
   addToCart(productId: number, quantity: number): void {
     if (isPlatformBrowser(this.platformId) && localStorage.getItem('currentUser') ) {
       const userDetails = JSON.parse(localStorage.getItem('currentUser') || '{}');

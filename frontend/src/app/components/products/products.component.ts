@@ -222,15 +222,20 @@ console.log('button clicked');
     if (isPlatformBrowser(this.platformId)) {
       const userDetails = JSON.parse(localStorage.getItem('currentUser') || '{}');
   
-      if (userDetails) {
+      if (userDetails?.id) {
         const userId = userDetails.id; // Retrieve userId from stored user details
-  
-    this.cartService.getCart(userId).subscribe(cart => {
-      this.cartItems = cart.cartItems;
-    
-    });
-    } else {
-      console.warn('User is not logged in. Cannot add to cart.');
+        this.cartService.getCart(userId).subscribe(
+          (cart) => {
+            this.cartItems = cart.cartItems || [];
+          },
+          (error) => {
+            console.error('Failed to load cart:', error);
+            this.toastr.error('Failed to load cart', 'Error');
+          }
+        );
+      } else {
+        console.warn('User is not logged in. Cannot add to cart.');
+      }
     }
   }
 }

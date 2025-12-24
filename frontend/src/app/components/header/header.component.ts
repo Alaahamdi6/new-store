@@ -137,20 +137,24 @@ export class HeaderComponent implements OnInit ,OnDestroy{
   }
 
   loadCartCount(): void {
+  try {
     const userDetails = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    if (userDetails && userDetails.id) {
+    if (userDetails?.id) {
       this.cartService.getCartItems(userDetails.id).subscribe(
         (cartItems) => {
-          this.cartItemCount = cartItems.length; 
+          this.cartItemCount = (cartItems && Array.isArray(cartItems)) ? cartItems.length : 0;
         },
         (error) => {
           console.error('Failed to load cart items:', error);
-          this.cartItemCount = 0; 
+          this.cartItemCount = 0;
         }
       );
     } else {
       this.cartItemCount = 0; // No user logged in
     }
+  } catch (error) {
+    console.error('Error parsing user details:', error);
+    this.cartItemCount = 0;
   }
   
 

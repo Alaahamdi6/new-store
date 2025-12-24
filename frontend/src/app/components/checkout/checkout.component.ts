@@ -53,12 +53,15 @@ export class CheckoutComponent implements OnInit {
       if (userDetails && userDetails.id) {
         this.cartService.getCartItems(userDetails.id).subscribe(
           (cartItems) => {
-            this.cartItems = cartItems;
+            this.cartItems = cartItems || [];
             this.calculateTotal();
-            this.cart_id= cartItems[0].cart.id ;  
+            if (cartItems && cartItems.length > 0) {
+              this.cart_id = cartItems[0]?.cart?.id || 0;
+            }
           },
           (error) => {
             console.error('Failed to load cart:', error);
+            this.toastr.error('Failed to load cart', 'Error');
           }
         );
       }
