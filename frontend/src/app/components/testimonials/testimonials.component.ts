@@ -53,26 +53,7 @@ export class TestimonialsComponent implements OnInit ,AfterViewInit{
     this.initializeOwlCarousel(); // Ensure Owl Carousel initializes after view is rendered
   }
   async loadTestimonials(): Promise<void> {
-    try {
-      // Set loading state to true
-      this.isLoading = true;
-
-      // Wait for the data to load
-      const data = await this.testimonialService.getTestimonials().toPromise();
-      this.testimonials = data || [];
-      this.cdr.detectChanges();
-      // Once testimonials are loaded, set loading state to false
-      this.isLoading = false;
-
-      setTimeout(() => {
-        this.initializeOwlCarousel(); // Initialize carousel after loading
-      }, 500);
-    } catch (error) {
-      // Handle error loading testimonials
-      this.isLoading = false;
-      this.toastr.error('Failed to load testimonials');
-      console.error(error);
-    }
+    await this.refreshTestimonials();
   }
 
   initializeOwlCarousel(): void {
@@ -93,6 +74,32 @@ export class TestimonialsComponent implements OnInit ,AfterViewInit{
     });
   }
   
+  private async refreshTestimonials(): Promise<void> {
+    try {
+      this.isLoading = true;
+      const data = await this.testimonialService.getTestimonials().toPromise();
+      this.testimonials = data || [];
+      this.cdr.detectChanges();
+      this.isLoading = false;
+      setTimeout(() => {
+        this.initializeOwlCarousel();
+      }, 500);
+    } catch (error) {
+      this.isLoading = false;
+      this.notifyError('Failed to load testimonials', error);
+    }
+  }
+
+  private notifyError(message: string, error?: unknown): void {
+    this.toastr.error(message);
+    if (error) {
+      console.error(error);
+    }
+  }
+
+  private notifySuccess(message: string): void {
+    this.toastr.success(message);
+  }
 
   onFileChange(event: any): void {
     this.selectedFile = event.target.files[0];
@@ -113,19 +120,16 @@ export class TestimonialsComponent implements OnInit ,AfterViewInit{
 
     this.testimonialService.addTestimonial(formData).subscribe(
       (testimonials) => {
-          this.toastr.success('Testimonial added successfully!');
-
-          this.testimonialForm.reset();
-          this.selectedFile = null; 
-          (document.getElementById('photo') as HTMLInputElement).value = '';
-
-          this.testimonials.push(testimonials);
-          this.loadTestimonials();
+        this.notifySuccess('Testimonial added successfully!');
+        this.testimonialForm.reset();
+        this.selectedFile = null;
+        (document.getElementById('photo') as HTMLInputElement).value = '';
+        this.testimonials.push(testimonials);
+        this.refreshTestimonials();
       },
-        (error) => {
-            this.toastr.error('Failed to add testimonial');
-            console.error(error);
-        }
+      (error) => {
+        this.notifyError('Failed to add testimonial', error);
+      }
     );
 }
   
@@ -137,12 +141,11 @@ export class TestimonialsComponent implements OnInit ,AfterViewInit{
     }
     this.testimonialService.deleteTestimonial(id).subscribe(
       () => {
-        this.toastr.success('Testimonial deleted successfully!');
-        this.loadTestimonials();
+        this.notifySuccess('Testimonial deleted successfully!');
+        this.refreshTestimonials();
       },
       (error) => {
-        this.toastr.error('Failed to delete testimonial');
-        console.error(error);
+        this.notifyError('Failed to delete testimonial', error);
       }
     );
   }
