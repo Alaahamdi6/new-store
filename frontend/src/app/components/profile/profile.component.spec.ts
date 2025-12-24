@@ -192,7 +192,7 @@ describe('ProfileComponent', () => {
   });
 
   it('changePassword should accept matching passwords', () => {
-    component.passwordForm.patchValue({ currentPassword: 'aazeaeaze6@', newPassword: 'secret1', confirmPassword: 'secret1' });
+    component.passwordForm.patchValue({ currentPassword: 'azeaeaze6@', newPassword: 'secret1', confirmPassword: 'secret1' });
     spyOn(console, 'log');
     component.changePassword();
     expect(console.log).toHaveBeenCalled();
