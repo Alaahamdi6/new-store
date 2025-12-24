@@ -148,7 +148,7 @@ export class ProfileComponent implements OnInit {
           localStorage.setItem('currentUser', JSON.stringify(updatedUser));  
           // Clear the selected photo preview
           this.selectedPhoto = null;
-          window.location.reload();
+          this.toastr.success('Profile updated successfully!', 'Success');
         },
         error: (err) => {
           console.error('Failed to update profile:', err);

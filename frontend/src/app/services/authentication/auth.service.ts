@@ -9,19 +9,14 @@ import { User } from '../../models/user.model';
   providedIn: 'root'
 })
 export class AuthService {
-  public currentUserSubject = new BehaviorSubject<any>(null);
+  public currentUserSubject: BehaviorSubject<User | null>;
   private apiUrl = 'http://localhost:8090/api/auth';
-  public currentUser$: Observable<any> = this.currentUserSubject.asObservable();
+  public currentUser$: Observable<any>;
 
   constructor(private http: HttpClient,@Inject(PLATFORM_ID) private platformId: Object) {
-    // Safe localStorage check
-    this.currentUserSubject = new BehaviorSubject<User | null>(this.getSafeLocalStorageItem('currentUser'));
-    const user = isPlatformBrowser(this.platformId)? this.getSafeLocalStorageItem('currentUser'): null;
-
+    const user = isPlatformBrowser(this.platformId) ? this.getSafeLocalStorageItem('currentUser') : null;
     this.currentUserSubject = new BehaviorSubject<User | null>(user);
-    if (user) {
-      this.currentUserSubject.next(user);
-    }
+    this.currentUser$ = this.currentUserSubject.asObservable();
   }
 
   get currentUser(): Observable<User | null> {
@@ -74,6 +69,10 @@ export class AuthService {
 
           this.setSafeLocalStorageItem('currentUser', userDetails);
           this.currentUserSubject.next(userDetails);
+        } else {
+          // Clear user storage if token is missing
+          this.removeSafeLocalStorageItem('currentUser');
+          this.currentUserSubject.next(null);
         }
         return response;
       }));

@@ -312,7 +312,6 @@ console.log('button clicked');
       this.fetchProducts(); // Refresh the product list
       this.editproductForm.reset(); // Reset the form after editing
       this.productToEdit = null; // Clear the productToEdit reference
-      window.location.reload();
     },
     (error) => {
       this.toastr.error('Failed to update product', 'Error');

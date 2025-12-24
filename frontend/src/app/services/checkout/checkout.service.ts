@@ -35,6 +35,7 @@ export class CheckoutService {
   }
 
   updateOrderStatusWithNotification(orderId: number, status: string): Observable<any> {
-    return this.http.put(`${this.baseUrl}/${orderId}/status`, { status });
+    // Delegate to single implementation to avoid duplication
+    return this.updateOrderStatus(orderId, status);
   }
 }

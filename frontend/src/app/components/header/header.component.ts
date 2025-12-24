@@ -106,7 +106,7 @@ export class HeaderComponent implements OnInit ,OnDestroy{
         }
         this.currentUser = userDetails;
         this.authService.currentUserSubject.next(userDetails); 
-        window.location.reload();
+        this.toastr.success('Login successful!', 'Success');
       },
       (error) => {
         this.loginError = 'Invalid username or password';
@@ -123,8 +123,7 @@ export class HeaderComponent implements OnInit ,OnDestroy{
     this.authService.signup(username, password).subscribe(
       () => {
         this.signupError = null;
-        alert('Signup successful! Please log in.');
-        window.location.reload();
+        this.toastr.success('Signup successful! Please log in.', 'Success');
       },
       (error) => {
         this.signupError = 'Failed to sign up. Try again later.';

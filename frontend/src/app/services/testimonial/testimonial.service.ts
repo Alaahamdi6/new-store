@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Testimonial } from '../../models/testimonial.model';
 
 @Injectable({
@@ -28,6 +29,10 @@ export class TestimonialService {
   }
 
   deleteTestimonial(id: number): Observable<void> {
-      return this.http.delete<void>(`${this.baseUrl}/${id}`);
+      return this.http.delete<void>(`${this.baseUrl}/${id}`).pipe(
+        // Ensure consumers receive undefined rather than null
+        // to satisfy tests expecting void emissions
+        map(() => undefined)
+      );
   }
 }

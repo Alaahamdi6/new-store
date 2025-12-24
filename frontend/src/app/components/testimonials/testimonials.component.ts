@@ -125,7 +125,7 @@ export class TestimonialsComponent implements OnInit ,AfterViewInit{
         this.selectedFile = null;
         (document.getElementById('photo') as HTMLInputElement).value = '';
         this.testimonials.push(testimonials);
-        this.refreshTestimonials();
+        this.loadTestimonials();
       },
       (error) => {
         this.notifyError('Failed to add testimonial', error);
@@ -142,7 +142,7 @@ export class TestimonialsComponent implements OnInit ,AfterViewInit{
     this.testimonialService.deleteTestimonial(id).subscribe(
       () => {
         this.notifySuccess('Testimonial deleted successfully!');
-        this.refreshTestimonials();
+        this.loadTestimonials();
       },
       (error) => {
         this.notifyError('Failed to delete testimonial', error);

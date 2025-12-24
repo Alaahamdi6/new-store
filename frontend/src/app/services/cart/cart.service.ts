@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject ,tap } from 'rxjs';
 import { HttpHeaders } from '@angular/common/http';
+import { buildAuthHeaders } from '../common/http-utils';
 
 @Injectable({
   providedIn: 'root'
@@ -16,56 +17,22 @@ export class CartService {
   constructor(private http: HttpClient) {}
 
   getCart(userId: number): Observable<any> {
-    const userDetails = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    const token = userDetails?.token;
-  
-    if (!token) {
-      throw new Error('No authentication token found');
-    }
-  
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    });
-  
+    const headers = buildAuthHeaders();
     return this.http.get(`${this.baseUrl}/${userId}`, { headers });
   }
 
   getCartItems(userId: number): Observable<any> {
-    const userDetails = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    const token = userDetails?.token;
-  
-    if (!token) {
-      throw new Error('No authentication token found');
-    }
-  
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    });
-  
+    const headers = buildAuthHeaders();
     return this.http.get(`${this.baseUrl}/items/${userId}`, { headers });
   }
   
   updateQuantity(cartId: number, productId: number, newQuantity: number): Observable<any> {
-    const userDetails = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    const token = userDetails?.token;
-
-    if (!token) {
-        throw new Error('No authentication token found');
-    }
-
-    const headers = new HttpHeaders({
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+    const headers = buildAuthHeaders();
+    return this.http.put(`${this.baseUrl}/update`, null, {
+      headers,
+      params: { cartId, productId, newQuantity }
     });
-
-    return this.http.put(`${this.baseUrl}/update`, null ,{ headers, params: {
-      cartId,
-      productId,
-      newQuantity
-    } });
-}
+  }
 
   
 
@@ -80,22 +47,12 @@ export class CartService {
   }
 
   private getHeaders(): HttpHeaders {
-    const userDetails = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    const token = userDetails?.token;
-    return new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-    });
+    return buildAuthHeaders();
   }
 
 
   addItem(userId: number, productId: number, quantity: number): Observable<any> {
-    const userDetails = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    const token = userDetails?.token; // Retrieve the JWT token
-  
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}` // Add the Authorization header
-    });
-  
+    const headers = buildAuthHeaders();
     return this.http.post(`${this.baseUrl}/add`, null, {
       headers,
       params: {
@@ -104,7 +61,6 @@ export class CartService {
         quantity: quantity.toString()
       }
     }).pipe(
-      // Notify subscribers after adding an item
       tap(() => this.cartUpdated.next())
     );
   }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { User } from '../../models/user.model';
 
 @Injectable({
@@ -28,7 +29,7 @@ export class UserService {
     }
 
     deleteUser(id: number): Observable<void> {
-        return this.http.delete<void>(`${this.baseUrl}/${id}`);
+        return this.http.delete<void>(`${this.baseUrl}/${id}`).pipe(map(() => undefined));
     }
 
     

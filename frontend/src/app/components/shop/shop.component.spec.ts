@@ -195,10 +195,9 @@ describe('ShopComponent', () => {
     component.productToEdit = { id: 99 } as any;
     component.editproductForm.patchValue({ id: 99, productName: 'x', category:'c', brand:'b', popularity:0, numberOfSales:0, image:'i', availableColors:'', description:'d', date:'2020-01-01', price: 1 });
     mockProductService.updateProduct.and.returnValue(of({}));
-    spyOn(window.location, 'reload');
     component.editProduct();
     expect(mockProductService.updateProduct).toHaveBeenCalledWith(99, jasmine.any(Object));
-    expect(window.location.reload).toHaveBeenCalled();
+    expect(mockToastr.success).toHaveBeenCalled();
   });
 
   it('loadProductForEdit patches edit form', () => {
