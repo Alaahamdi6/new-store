@@ -6,6 +6,12 @@
 /out-tsc
 /bazel-out
 
+# Test coverage and reports
+/coverage/
+/reports/
+*.lcov
+karma-results*
+
 # Node
 /node_modules
 npm-debug.log
