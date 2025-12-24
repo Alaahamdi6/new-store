@@ -192,14 +192,14 @@ describe('ProfileComponent', () => {
   });
 
   it('changePassword should accept matching passwords', () => {
-    component.passwordForm.patchValue({ currentPassword: 'oldPassword123', newPassword: 'secret1', confirmPassword: 'secret1' });
+    component.passwordForm.patchValue({ currentPassword: 'current-password', newPassword: 'new-password-one', confirmPassword: 'new-password-one' });
     spyOn(console, 'log');
     component.changePassword();
     expect(console.log).toHaveBeenCalled();
   });
 
   it('changePassword should alert on mismatch', () => {
-    component.passwordForm.patchValue({ currentPassword: 'a', newPassword: 'secret1', confirmPassword: 'secret2' });
+    component.passwordForm.patchValue({ currentPassword: 'current-password', newPassword: 'new-password-one', confirmPassword: 'different-password' });
     spyOn(window, 'alert');
     component.changePassword();
     expect(window.alert).toHaveBeenCalled();
