@@ -120,6 +120,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
@@ -139,7 +140,46 @@
 					</execution>
 				</executions>
 			</plugin>
+
 		</plugins>
 	</build>
+	
+
+
+	<profiles>
+		<profile>
+			<id>openjml</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>3.1.0</version>
+						<executions>
+							<execution>
+								<id>run-openjml</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<executable>openjml</executable>
+									<arguments>
+										<argument>-quiet</argument>
+										<argument>-esc</argument>
+										<argument>-classpath</argument>
+										<argument>${project.build.outputDirectory}</argument>
+										<argument>-sourcepath</argument>
+										<argument>${project.basedir}/src/main/java</argument>
+										<argument>${project.basedir}/src/main/java/electronics/elecstore/example/JmlExample.java</argument>
+									</arguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>
