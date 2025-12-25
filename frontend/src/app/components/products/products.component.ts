@@ -238,7 +238,7 @@ console.log('button clicked');
       }
     }
   }
-}
+  
 
   addToCart(productId: number, quantity: number): void {
     if (isPlatformBrowser(this.platformId ) && localStorage.getItem('currentUser')) {

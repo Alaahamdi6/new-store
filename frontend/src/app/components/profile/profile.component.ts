@@ -228,11 +228,6 @@ export class ProfileComponent implements OnInit {
         }
       });
     }
-        error: (err) => {
-          console.error('Failed to load orders:', err);
-        }
-      });
-    }
   }
 
   removeFromWishlist(productId: number): void {

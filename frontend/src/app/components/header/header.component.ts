@@ -156,7 +156,7 @@ export class HeaderComponent implements OnInit ,OnDestroy{
     console.error('Error parsing user details:', error);
     this.cartItemCount = 0;
   }
-  
+  }
 
   subscribeToCartChanges(): void {
     this.cartService.cartUpdated$.subscribe(() => {
