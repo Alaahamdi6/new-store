@@ -35,8 +35,7 @@
   -webkit-tap-highlight-color: transparent; }
   .owl-theme .owl-dots .owl-dot {
     display: inline-block;
-    zoom: 1;
-    *display: inline; }
+    zoom: 1; }
     .owl-theme .owl-dots .owl-dot span {
       width: 10px;
       height: 10px;

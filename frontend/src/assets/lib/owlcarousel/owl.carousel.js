@@ -1634,7 +1634,7 @@
 	 * @returns {Boolean} - An indication if the input is a Number or can be coerced to a Number
 	 */
 	Owl.prototype.isNumeric = function(number) {
-		return !isNaN(parseFloat(number));
+		return !Number.isNaN(Number.parseFloat(number));
 	};
 
 	/**
@@ -1863,7 +1863,9 @@
 
 					while (i++ < n) {
 						this.load(clones / 2 + this._core.relative(position));
-						clones && $.each(this._core.clones(this._core.relative(position)), load);
+						if (clones) {
+							$.each(this._core.clones(this._core.relative(position)), load);
+						}
 						position++;
 					}
 				}
