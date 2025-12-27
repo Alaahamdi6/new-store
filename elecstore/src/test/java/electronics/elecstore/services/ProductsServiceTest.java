@@ -79,6 +79,51 @@ class ProductsServiceTest {
         verify(productsRepository, times(1)).findById(99);
     }
 
-    
+    @Test
+    void testDeleteProduct() {
+        doNothing().when(productsRepository).deleteById(1);
+
+        productsService.deleteProduct(1);
+
+        verify(productsRepository, times(1)).deleteById(1);
+    }
+
+    @Test
+    void testGetProductsByCategory() {
+        ProductsModel product1 = new ProductsModel(1, "Laptop", "Electronics", "Dell", 5, 10, "image1.jpg", "Black,White", "A great laptop", null, 1200.00);
+        ProductsModel product2 = new ProductsModel(2, "Phone", "Electronics", "Samsung", 10, 20, "image2.jpg", "Blue,Red", "A great phone", null, 800.00);
+        List<ProductsModel> mockProducts = Arrays.asList(product1, product2);
+
+        when(productsRepository.findByCategory("Electronics")).thenReturn(mockProducts);
+
+        List<ProductsModel> result = productsService.getProductsByCategory("Electronics");
+
+        assertEquals(2, result.size());
+        assertEquals("Electronics", result.get(0).getCategory());
+        verify(productsRepository, times(1)).findByCategory("Electronics");
+    }
+
+    @Test
+    void testGetProductsByCategory_Empty() {
+        when(productsRepository.findByCategory("Unknown")).thenReturn(Arrays.asList());
+
+        List<ProductsModel> result = productsService.getProductsByCategory("Unknown");
+
+        assertTrue(result.isEmpty());
+        verify(productsRepository, times(1)).findByCategory("Unknown");
+    }
+
+    @Test
+    void testSaveProduct_UpdateExisting() {
+        ProductsModel product = new ProductsModel(1, "Laptop Pro", "Electronics", "Apple", 8, 15, "image1.jpg", "Silver", "Premium laptop", null, 2000.00);
+
+        when(productsRepository.save(product)).thenReturn(product);
+
+        ProductsModel result = productsService.saveProduct(product);
+
+        assertEquals("Laptop Pro", result.getProductName());
+        assertEquals(2000.00, result.getPrice());
+        verify(productsRepository, times(1)).save(product);
+    }
 }
 

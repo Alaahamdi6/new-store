@@ -126,4 +126,59 @@ class CartsServiceTest {
         assertTrue(cart.getCartItems().isEmpty());
         verify(cartsRepository, times(1)).save(cart);
     }
+
+    @Test
+    void testGetCartByUserId_ExistingCart() {
+        Long userId = 1L;
+        CartsModel existingCart = new CartsModel(userId);
+        when(cartsRepository.findByUserId(userId)).thenReturn(Optional.of(existingCart));
+
+        CartsModel result = cartsService.getCartByUserId(userId);
+
+        assertNotNull(result);
+        assertEquals(userId, result.getUserId());
+        verify(cartsRepository, times(1)).findByUserId(userId);
+        verify(cartsRepository, never()).save(any());
+    }
+
+    @Test
+    void testAddItemToCart_NewItem() {
+        Long userId = 1L;
+        int productId = 200;
+        int quantity = 1;
+
+        CartsModel cart = new CartsModel(userId);
+        cart.setCartItems(new ArrayList<>());
+        ProductsModel product = new ProductsModel();
+        product.setId(productId);
+
+        when(cartsRepository.findByUserId(userId)).thenReturn(Optional.of(cart));
+        when(productsRepository.findById(productId)).thenReturn(Optional.of(product));
+        when(cartItemRepository.save(any(CartItemModel.class))).thenAnswer(i -> i.getArguments()[0]);
+
+        CartItemModel result = cartsService.addItemToCart(userId, productId, quantity);
+
+        assertNotNull(result);
+        assertEquals(quantity, result.getQuantity());
+        assertEquals(product, result.getProduct());
+        verify(cartItemRepository, times(1)).save(any(CartItemModel.class));
+    }
+
+    @Test
+    void testUpdateCartItemQuantity_ZeroQuantity() {
+        Long cartId = 1L;
+        int productId = 100;
+        int zeroQuantity = 0;
+
+        CartItemModel cartItem = new CartItemModel();
+        cartItem.setQuantity(5);
+        when(cartItemRepository.findByCartIdAndProductId(cartId, productId)).thenReturn(cartItem);
+        when(cartItemRepository.save(cartItem)).thenReturn(cartItem);
+
+        CartItemModel result = cartsService.updateCartItemQuantity(cartId, productId, zeroQuantity);
+
+        assertNotNull(result);
+        assertEquals(zeroQuantity, result.getQuantity());
+    }
 }
+
