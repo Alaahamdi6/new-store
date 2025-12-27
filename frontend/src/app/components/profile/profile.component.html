@@ -9,7 +9,9 @@
     <!-- Navigation Sidebar -->
     <div class="profile-sidebar">
       <div class="profile-header">
-        <img [src]="selectedPhoto || 'http://localhost:8090/uploads/' + user.photo" class="profile-img">
+        <img [src]="selectedPhoto || 'http://localhost:8090/uploads/' + user.photo" 
+             alt="{{ user.username }}'s profile"
+             class="profile-img">
         <h3>{{ user.username }}</h3>
       </div>
       <nav class="profile-nav">
@@ -47,7 +49,9 @@
             <div class="form-group">
               <label for="profilePicture">Profile Picture</label>
               <div class="image-upload">
-                <img [src]="selectedPhoto || 'http://localhost:8090/uploads/' + user.photo" class="current-image">
+                <img [src]="selectedPhoto || 'http://localhost:8090/uploads/' + user.photo" 
+                     alt="Current profile picture"
+                     class="current-image">
                 <input type="file" id="profilePicture" (change)="onFileChange($event)" accept="image/*"  class="form-control">
               </div>
             </div>
@@ -172,6 +176,7 @@
                   <td>
                     <div class="d-flex align-items-center">
                       <img [src]="'assets/img/' + item.product.image" 
+                           alt="{{ item.product.productName }}"
                            class="img-thumbnail me-2" 
                            style="width: 60px; height: 60px; object-fit: cover">
                       {{item.product.productName}}

@@ -37,7 +37,9 @@
                     <!-- Profile Picture Button with Dropdown -->
                     <div class="profile-dropdown" *ngIf="currentUser">
                       <a class="btn-profile me-4" (click)="toggleDropdown()">
-                        <img [src]="'http://localhost:8090/uploads/' + userDetails.photo" class="profile-img">
+                        <img [src]="'http://localhost:8090/uploads/' + userDetails.photo" 
+                             alt="{{ userDetails.username }}"
+                             class="profile-img">
                       </a>
  
                       <!-- Dropdown Menu -->

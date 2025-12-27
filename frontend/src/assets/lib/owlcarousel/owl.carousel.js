@@ -291,7 +291,9 @@
 					'margin-right': rtl ? '' : margin
 				};
 
-			!grid && this.$stage.children().css(css);
+			if (!grid) {
+				this.$stage.children().css(css);
+			}
 
 			cache.css = css;
 		}
@@ -399,7 +401,9 @@
 	}, {
 		filter: [ 'items' ],
 		run: function() {
-			this._coordinates.length < 1 && this.$stage.removeAttr('style');
+			if (this._coordinates.length < 1) {
+				this.$stage.removeAttr('style');
+			}
 		}
 	}, {
 		filter: [ 'width', 'items', 'settings' ],
@@ -586,7 +590,9 @@
 
 		this._invalidated = {};
 
-		!this.is('valid') && this.enter('valid');
+		if (!this.is('valid')) {
+			this.enter('valid');
+		}
 	};
 
 	/**
@@ -884,7 +890,9 @@
 	Owl.prototype.animate = function(coordinate) {
 		var animate = this.speed() > 0;
 
-		this.is('animating') && this.onTransitionEnd();
+		if (this.is('animating')) {
+			this.onTransitionEnd();
+		}
 
 		if (animate) {
 			this.enter('animating');
@@ -958,7 +966,9 @@
 	Owl.prototype.invalidate = function(part) {
 		if ($.type(part) === 'string') {
 			this._invalidated[part] = true;
-			this.is('valid') && this.leave('valid');
+			if (this.is('valid')) {
+				this.leave('valid');
+			}
 		}
 		return $.map(this._invalidated, function(v, i) { return i });
 	};
@@ -1340,12 +1350,9 @@
 			this._mergers.splice(position, 0, content.find('[data-merge]').addBack('[data-merge]').attr('data-merge') * 1 || 1);
 		}
 
-		this._items[current] && this.reset(this._items[current].index());
-
-		this.invalidate('items');
-
-		this.trigger('added', { content: content, position: position });
-	};
+	if (this._items[current]) {
+		this.reset(this._items[current].index());
+	}
 
 	/**
 	 * Removes an item by its position.

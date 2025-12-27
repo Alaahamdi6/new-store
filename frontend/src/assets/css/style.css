@@ -270,15 +270,10 @@
     content: "";
     width: 35px;
     height: 35px;
-    background:   rgba(202, 182, 155, 0.9);
+    background: rgba(202, 182, 155, 0.9);
     position: absolute;
     bottom: -10px;
-    transform: translate(-50%);
-    transform: rotate(45deg);
-    background:   rgba(202, 182, 155, 0.9);
-    
-   
-    
+    transform: translate(-50%) rotate(45deg);
 }
 /*** featurs End ***/
 
