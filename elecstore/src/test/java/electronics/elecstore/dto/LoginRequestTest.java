@@ -5,16 +5,18 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LoginRequestTest {
+    
+    private static final String TEST_PASSWORD = "testpassword";
 
     @Test
     void testGettersAndSetters() {
         LoginRequest request = new LoginRequest();
         
         request.setUsername("testuser");
-        request.setPassword("password123");
+        request.setPassword(TEST_PASSWORD);
 
         assertEquals("testuser", request.getUsername());
-        assertEquals("password123", request.getPassword());
+        assertEquals(TEST_PASSWORD, request.getPassword());
     }
 
     @Test
@@ -41,9 +43,9 @@ class LoginRequestTest {
         LoginRequest request = new LoginRequest();
         
         request.setUsername("user@example.com");
-        request.setPassword("P@ssw0rd!#$");
+        request.setPassword(TEST_PASSWORD);
 
         assertEquals("user@example.com", request.getUsername());
-        assertEquals("P@ssw0rd!#$", request.getPassword());
+        assertEquals(TEST_PASSWORD, request.getPassword());
     }
 }

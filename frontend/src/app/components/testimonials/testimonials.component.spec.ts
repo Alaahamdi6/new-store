@@ -16,6 +16,13 @@ describe('TestimonialsComponent', () => {
   const mockTestimonialService = jasmine.createSpyObj('TestimonialService', ['getTestimonials', 'addTestimonial', 'deleteTestimonial']);
 
   beforeEach(async () => {
+    // reset spy call history before each test to avoid leakage
+    mockTestimonialService.getTestimonials.calls.reset();
+    mockTestimonialService.addTestimonial.calls.reset();
+    mockTestimonialService.deleteTestimonial.calls.reset();
+    mockToastr.success.calls.reset();
+    mockToastr.error.calls.reset();
+
     await TestBed.configureTestingModule({
       imports: [TestimonialsComponent],
       providers: [

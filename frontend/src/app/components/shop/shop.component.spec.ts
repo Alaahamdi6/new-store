@@ -184,7 +184,7 @@ describe('ShopComponent', () => {
   });
 
   it('addProduct calls service and navigates on success', () => {
-    component.productForm.patchValue({ productName: 'p', category: 'c', brand: 'b', popularity: 0, numberOfSales:0, image: 'i', availableColors:'', description:'d', date:'2020-01-01', price: 1 });
+    component.productForm.patchValue({ productName: 'p', category: 'c', brand: 'b', popularity: 0, numberOfSales:0, image: 'i', availableColors:'red', description:'d', date:'2020-01-01', price: 1 });
     mockProductService.addProduct.and.returnValue(of({}));
     component.addProduct();
     expect(mockProductService.addProduct).toHaveBeenCalled();
@@ -193,7 +193,7 @@ describe('ShopComponent', () => {
 
   it('editProduct calls updateProduct when productToEdit present', () => {
     component.productToEdit = { id: 99 } as any;
-    component.editproductForm.patchValue({ id: 99, productName: 'x', category:'c', brand:'b', popularity:0, numberOfSales:0, image:'i', availableColors:'', description:'d', date:'2020-01-01', price: 1 });
+    component.editproductForm.patchValue({ id: 99, productName: 'x', category:'c', brand:'b', popularity:0, numberOfSales:0, image:'i', availableColors:'red', description:'d', date:'2020-01-01', price: 1 });
     mockProductService.updateProduct.and.returnValue(of({}));
     component.editProduct();
     expect(mockProductService.updateProduct).toHaveBeenCalledWith(99, jasmine.any(Object));
