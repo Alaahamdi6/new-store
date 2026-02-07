@@ -9,7 +9,7 @@ COPY . .
 RUN npx ng build --configuration production
 
 # Runtime stage
-FROM nginx:alpine
+FROM nginx:1.29.5-alpine3.23
 # Remove default nginx welcome page
 RUN rm -rf /usr/share/nginx/html/*
 # Copy built assets
